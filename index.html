@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>YouCantOpenDevtoolsHere</title>
+  <style>
+    body {
+      background: white;
+      color: black;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 900;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      font-size: 2em;
+      margin: 0;
+      position: relative;
+    }
+
+    .corner-text {
+      position: fixed;
+      bottom: 10px;
+      right: 15px;
+      font-size: 0.5em;
+      font-weight: 900;
+      opacity: 50%;
+      color: #000000;
+    }
+
+    #reload-text {
+      font-weight: 400;
+      font-size: 0.6em;
+      color: gray;
+      margin-top: 0.6em;
+      display: none;
+      user-select: none;
+    }
+    
+    a {
+      color: #00ff00;
+      text-decoration: none;
+      opacity: 100%;
+    }
+
+    noscript {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      color: red;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 900;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2em;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+  <div id="text-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <div id="main-text">YOU CAN'T OPEN DEVTOOLS HERE... TRY IT</div>
+    <div id="reload-text">RELOADING...</div>
+  </div>
+  <div class="corner-text">A PROJECT BY <a href="https://joplay.xyz">JOPLAY.XYZ</a></div>
+  
+
+  <noscript>
+    JAVASCRIPT IS DISABLED... YOU CHEATER!!
+  </noscript>
+
+  <script>
+    (() => {
+      const mainText = document.getElementById('main-text');
+      const cornerText = document.querySelector('.corner-text');
+      const reloadText = document.getElementById('reload-text');
+      const messages = [
+        "NICE TRY",
+        "WHAT DID YOU EXPECT",
+        "CLOSE THAT CONSOLE LIL BRO",
+        "ARE YOU BLIND??",
+        "NAH",
+        "GET OUT!!!",
+        "WHAT DID YOU REALLY EXPECT"
+      ];
+
+      let devToolsOpen = false;
+
+      function punishDevTools() {
+        if (!mainText) return;
+        const msg = messages[Math.floor(Math.random() * messages.length)];
+        mainText.textContent = msg;
+
+        if (reloadText) {
+          reloadText.style.display = 'block';
+          reloadText.style.color = 'lightgray';
+        }
+
+        document.body.style.background = 'black';
+        mainText.style.color = 'white';
+        if (cornerText) cornerText.style.color = 'white';
+        setTimeout(() => location.reload(), 2000);
+      }
+
+      function detectDevToolsBySize() {
+        const threshold = 160;
+        const widthDiff = window.outerWidth - window.innerWidth;
+        const heightDiff = window.outerHeight - window.innerHeight;
+
+        if (widthDiff > threshold || heightDiff > threshold) {
+          if (!devToolsOpen) {
+            devToolsOpen = true;
+            punishDevTools();
+          }
+        } else {
+          devToolsOpen = false;
+        }
+      }
+
+      document.addEventListener('contextmenu', e => {
+        e.preventDefault();
+        punishDevTools();
+      });
+
+      document.addEventListener('keydown', e => {
+        if (
+          e.key === 'F12' ||
+          (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) ||
+          (e.ctrlKey && e.key.toUpperCase() === 'U')
+        ) {
+          e.preventDefault();
+          punishDevTools();
+        }
+      });
+
+      setInterval(detectDevToolsBySize, 1000);
+
+      (function detectDevToolsByConsole() {
+        const el = new Image();
+        Object.defineProperty(el, 'id', {
+          get() {
+            punishDevTools();
+          }
+        });
+        console.log('%c', el);
+      })();
+    })();
+  </script>
+</body>
+</html>
